@@ -18,6 +18,7 @@
 -------------------------------------------------------------------------- */	
 
 using System;
+using System.IO;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
@@ -49,6 +50,23 @@ public class JsonViewer
     public bool isOpened;
   }
 
+  [Serializable]
+  public class JsonViewerSettings : ISerializationCallbackReceiver
+  {
+    public string lastJsonPath;
+    public string lastJson;
+
+    public void OnBeforeSerialize()
+    {
+    }
+
+    public void OnAfterDeserialize()
+    {
+    }
+  };
+
+  public static JsonViewerSettings jsonViewerSettings = new JsonViewerSettings();
+
   Dictionary<string, JsonObject> deserializedObject = new Dictionary<string, JsonObject>();
 
   string json;
@@ -62,6 +80,7 @@ public class JsonViewer
   public void setJson(string jsonString) 
   {
     json = jsonString;
+    jsonParse();
   }
 
   void jsonParse()
@@ -116,6 +135,23 @@ public class JsonViewer
         }
       }
     }
+ }
+
+ public void save() 
+ {
+  if (!Directory.Exists("UserSettings/JsonViewerForUnity/"))
+      Directory.CreateDirectory("UserSettings/JsonViewerForUnity/");
+  System.IO.File.WriteAllText("UserSettings/JsonViewerForUnity/JsonViewerData", jsonViewerSettings.toJson());
+ }
+
+ public void load() 
+ {
+  try {
+    jsonViewerSettings.fromJson(System.IO.File.ReadAllText("UserSettings/JsonViewerForUnity/JsonViewerData"));
+  }
+  catch(System.Exception e) {
+    Debug.LogError(e);
+  }
  }
 
 }

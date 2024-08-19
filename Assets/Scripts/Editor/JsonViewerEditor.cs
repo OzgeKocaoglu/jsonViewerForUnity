@@ -19,6 +19,8 @@
 
 using System.Linq;
 using System.Text;
+using System.IO;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -41,24 +43,49 @@ public class JsonViewerEditor : EditorWindow
   }
 
   JsonViewer jsonViewer;
+  string currentText;
+  string lastPath;
 
   void OnEnable() 
   {
     jsonViewer = new JsonViewer();
+    jsonViewer.load();
+    currentText = JsonViewer.jsonViewerSettings.lastJson;
+    lastPath = JsonViewer.jsonViewerSettings.lastJsonPath;
+  }
+
+  void OnDisable() 
+  {
+    jsonViewer.save();
   }
 
   void OnGUI()
   {
+    EditorGUILayout.BeginVertical();
+    if (String.IsNullOrWhiteSpace(currentText)) {
+      EditorGUILayout.LabelField(new GUIContent("Json is empty."));
+    }
+    else {
+      EditorGUILayout.TextField(lastPath);
+    }
+
+    EditorGUILayout.EndVertical();
+
+    if (GUILayout.Button("Select Json")) {
+      lastPath = EditorUtility.OpenFilePanel("Open json file", "", "json");
+      JsonViewer.jsonViewerSettings.lastJsonPath = lastPath;
+      if (lastPath.Length != 0) {
+        currentText = File.ReadAllText(lastPath);
+        JsonViewer.jsonViewerSettings.lastJson = currentText;
+        jsonViewer.setJson(currentText.toJson());
+      }
+    }
+
+
     if (jsonViewer == null) return;
-
-
     jsonViewer.draw();
   }
 
-  public string toJson(object obj) 
-  {
-    return JsonUtility.ToJson(obj); 
-  }
 
 }
 
