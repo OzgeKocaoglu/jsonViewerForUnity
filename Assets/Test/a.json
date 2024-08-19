@@ -1,6 +1,5 @@
 {
   "result": [
-    "repeat(1,2)",
     {
       "message": "Hello, firstName()! Your order number is: #int(1,100)",
       "phoneNumber": "phoneNumber()",
@@ -14,7 +13,6 @@
       "username": "this.name.first-this.name.last",
       "password": "password()",
       "emails": [
-        "repeat(2)",
         "email(gmail.com, example.com)"
       ],
       "location": {

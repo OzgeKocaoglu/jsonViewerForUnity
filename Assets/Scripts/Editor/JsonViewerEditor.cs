@@ -77,7 +77,7 @@ public class JsonViewerEditor : EditorWindow
       if (lastPath.Length != 0) {
         currentText = File.ReadAllText(lastPath);
         JsonViewer.jsonViewerSettings.lastJson = currentText;
-        jsonViewer.setJson(currentText.toJson());
+        jsonViewer.setJson(currentText);
       }
     }
 

@@ -80,18 +80,20 @@ public class JsonViewer
   public void setJson(string jsonString) 
   {
     json = jsonString;
-    jsonParse();
+    jsonParse(jsonString);
   }
 
-  void jsonParse()
+  void jsonParse(string jsonString)
   {
     if(isValidJsonObject()) {
-      var objectList = json.Split(',').ToList();
+      var objectList = jsonString.Split(',').ToList();
       foreach (var o in objectList) {
         var objectParts = o.Split(':').ToList();
 
+        Debug.Log($"Object . {objectParts[0]} - {objectParts[1]}");
         var key = objectParts[0];
         var value = objectParts[1];
+        jsonParse(value);
         if(!deserializedObject.ContainsKey(key)) {
           deserializedObject.Add(key, new JsonObject(value, false));
         }
